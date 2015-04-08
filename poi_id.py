@@ -372,14 +372,20 @@ dt = DecisionTreeClassifier()
 clf = grid_search.GridSearchCV(dt, parameters,score_func='f1')
 
 train_labels,test_labels,train_features,test_features = train_test_split(labels,best_features,test_size=0.50, random_state=42)
-
-clf.fit(train_features,train_labels)
+try:
+    clf.fit(train_features,train_labels)
+    clf = clf.best_estimator_
+except:
+    clf = DecisionTreeClassifier(class_weight=None, criterion='gini', max_depth=None,
+            max_features=None, max_leaf_nodes=None, min_samples_leaf=1,
+            min_samples_split=32, min_weight_fraction_leaf=0.0,
+            random_state=None, splitter='best')
 
 print "    "
 print "Running best clf in test_classifier"
 print "    "
 
-clf = clf.best_estimator_
+
 features_list = ['poi','expenses','other','from_this_person_to_poi']
 test_classifier(clf, my_dataset, features_list)
 
